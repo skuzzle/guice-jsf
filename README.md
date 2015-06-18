@@ -2,8 +2,6 @@
 
 This article describes how to set up a JSF web application using Apache my-faces and Google Guice for dependency injection. Not only will we use Guice for resolving managed beans, we also use Guice's Servlet extension to partly replace the `web.xml` with Guice Modules and to have Guice run the whole web stack.
 
-Note: code for this article is available here: https://github.com/skuzzle/guice-jsf
-
 ### Dependencies
 We start by defining some minimal required dependencies for our web application. Those 
 include the `my-faces` API and implementation as well as `guice` and its servlet 
