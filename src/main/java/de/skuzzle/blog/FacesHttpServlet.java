@@ -12,8 +12,14 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 
+/**
+ * Wrapper for the {@link FacesServlet} to provide a {@link HttpServlet} view onto
+ * it.
+ *
+ * @author Simon Taddiken
+ */
 @Singleton
-public class FacesHttpServlet extends HttpServlet {
+class FacesHttpServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 

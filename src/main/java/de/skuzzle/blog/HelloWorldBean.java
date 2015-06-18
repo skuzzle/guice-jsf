@@ -2,6 +2,11 @@ package de.skuzzle.blog;
 
 import javax.faces.bean.ManagedBean;
 
+/**
+ * Simple ViewScoped bean.
+ *
+ * @author Simon Taddiken
+ */
 @ManagedBean
 @ViewScoped
 public class HelloWorldBean {

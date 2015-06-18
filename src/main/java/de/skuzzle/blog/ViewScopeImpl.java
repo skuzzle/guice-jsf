@@ -9,7 +9,14 @@ import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.Scope;
 import com.google.inject.Scopes;
+import com.google.inject.servlet.SessionScoped;
 
+/**
+ * This is a copy of guice's implementation of {@link SessionScoped} with
+ * adjustments to place objects into the current view scope.
+ *
+ * @author Simon Taddiken
+ */
 final class ViewScopeImpl implements Scope {
 
     private enum NullObject {
