@@ -163,56 +163,14 @@ public void configureServlets() {
 }
 ```
 
-By now our application _should_ be ready to answer requests using the JSF servlet. In fact, a little testing reveals it actually does. But something is still strange: a little debugging teaches us that our `FacesHttpServlet` never once gets instantiated. The problem we are facing here is, that JSF uses the Java Service Provider to inject a ServletContextListener which is responsible for setting up the FacesServlet and the initial JSF configuration automatically. Two tasks are involved in our next step:
+By now our application _should_ be ready to answer requests using the JSF servlet. In fact, a little testing reveals it actually does. But something is still strange: a little debugging teaches us that our `FacesHttpServlet` never once gets instantiated. The problem we are facing here is, that JSF uses the Java Service Provider to inject a ServletContainerInitializer which is responsible for setting up the FacesServlet automatically. We can prevent it from doing so by adding the following context-param to the `web.xml`:
 
-1. We need to prevent the automatic setup of the JSF servlet.
-2. We must make sure the JSF setup routine is performed anyway.
-
-Step one can be achieved by a simple context-param in the `web.xml`:
 ```xml
 <context-param>
-	<param-name>org.apache.myfaces.INITIALIZE_ALWAYS_STANDALONE</param-name>
-	<param-value>true</param-value>
+    <param-name>org.apache.myfaces.INITIALIZE_ALWAYS_STANDALONE</param-name>
+    <param-value>true</param-value>
 </context-param>
 ```
-This will give us the complete control of how and when JSF is set up. The now missing JSF setup is normally done by the `org.apache.myfaces.webapp.StartupServletContextListener` class. If it finds the FacesServlet has not already been instantiated, it will do just that prior to performing further mandatory steps. But if the FacesServlet has already been instantiated by the time the listener is called, it will skip the first step and perform only the further mandatory steps. The only thing left for us to do is, to manually create the `StartupServletContextListener` and call its `contextInitialized` method. We can 'abuse' our GuiceservletContextListener for this task. So we modify it to look like this:
-
-```java
-public class MyGuiceServletContextListener extends
-        GuiceServletContextListener {
-
-    private final Injector injector;
-    private StartupServletContextListener startupListener;
-    
-    public MyGuiceServletContextListener() {
-        // List your modules here
-        this.injector = Guice.createInjector(...);
-    }
-
-    @Override
-    public Injector getInjector() {
-        return this.injector;
-    }
-    
-    @Override
-    public void contextInitialized(ServletContextEvent event) {
-        // this sets up guice
-        super.contextInitialized(event);
-
-        // Get hold of the StartupServletContextListener and 
-        // call it after Guice has been initialized
-        this.startupListener = this.injector.getInstance(StartupServletContextListener.class);
-        this.startupListener.contextInitialized(event);
-    }
-    
-    public void contextDestroyed(ServletContextEvent event) {
-        super.contextDestroyed(event);
-        this.startupListener.contextDestroyed(event);
-    }
-}
-```
-
-Because in our ServletModule we bound the `FacesServlet` as _eager singleton_ it will be instantiated by the time the Injector is created. Thus by the time we notify the StartupServletContextListener, the servlet alrady exists and the listener continues its normal setup procedure. Easy, huh?
 
 From now on, the complete web stack with filtering and serving is managed by Guice. All your filters and further servlets can now be created, injected and routed by Guice. Of course this includes Guice's own `PersistFilter` to use JPA in your application.
 
@@ -235,11 +193,6 @@ public void contextInitialized(ServletContextEvent event) {
     // this sets up guice
     super.contextInitialized(event);
 
-    // Get hold of the StartupServletContextListener and 
-    // call it after Guice has been initialized
-    this.startupListener = this.injector.getInstance(StartupServletContextListener.class);
-    this.startupListener.contextInitialized(event);
-    
     // NEW: place injector into the context for the GuiceResolver to find
     event.getServletContext().setAttribute(GuiceResolver.KEY, this.injector);
 }
