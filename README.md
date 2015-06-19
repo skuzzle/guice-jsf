@@ -164,6 +164,7 @@ public void configureServlets() {
 ```
 
 By now our application _should_ be ready to answer requests using the JSF servlet. In fact, a little testing reveals it actually does. But something is still strange: a little debugging teaches us that our `FacesHttpServlet` never once gets instantiated. The problem we are facing here is, that JSF uses the Java Service Provider to inject a ServletContextListener which is responsible for setting up the FacesServlet and the initial JSF configuration automatically. Two tasks are involved in our next step:
+
 1. We need to prevent the automatic setup of the JSF servlet.
 2. We must make sure the JSF setup routine is performed anyway.
 
