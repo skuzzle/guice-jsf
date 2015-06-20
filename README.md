@@ -163,7 +163,7 @@ public void configureServlets() {
 }
 ```
 
-By now our application _should_ be ready to answer requests using the JSF servlet. In fact, a little testing reveals it actually does. But something is still strange: a little debugging teaches us that our `FacesHttpServlet` never once gets instantiated. The problem we are facing here is, that JSF uses the Java Service Provider to inject a ServletContainerInitializer which is responsible for setting up the FacesServlet automatically. We can prevent it from doing so by adding the following context-param to the `web.xml`:
+By now our application _should_ be ready to answer requests using the JSF servlet. In fact, a little testing reveals it actually does. But something is still strange: a little debugging teaches us that our `FacesHttpServlet` never once gets instantiated. The problem we are facing here is, that JSF uses the Java Service Provider to inject a ServletContainerInitializer which is responsible for setting up the FacesServlet automatically (namely the `MyFacesContainerInitializer`). We can prevent it from doing so by adding the following context-param to the `web.xml`:
 
 ```xml
 <context-param>
