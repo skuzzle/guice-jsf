@@ -267,7 +267,7 @@ final class ViewScopeImpl implements Scope {
                     if (t == null) {
                         t = unscoped.get();
                         if (!Scopes.isCircularProxy(t)) {
-                            viewRoot.getViewMap().put(name, t == null
+                            viewMap().put(name, t == null
                                     ? NullObject.INSTANCE
                                     : t);
                         }
