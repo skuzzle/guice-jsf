@@ -11,11 +11,17 @@ import javax.faces.bean.ManagedBean;
 @ViewScoped
 public class HelloWorldBean {
 
+    private int counter;
+
     public HelloWorldBean() {
-        System.out.println("View Scoped bean recreated");
     }
 
-    public String getHelloWorld() {
-        return "Hello World";
+    public int getCounter() {
+        return this.counter;
+    }
+
+    public String increment() {
+        ++this.counter;
+        return null;
     }
 }

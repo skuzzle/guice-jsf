@@ -11,7 +11,11 @@
     </h:head>
 
     <h:body>
-        <h:outputText value="#{helloWorldBean.helloWorld}"/>
+        Counter: <h:outputText value="#{helloWorldBean.counter}"/>
+        
+        <h:form>
+            <h:commandButton value="Increment" action="#{helloWorldBean.increment}"/>
+        </h:form>
     </h:body>
 
 </html>
