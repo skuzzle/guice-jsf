@@ -233,7 +233,14 @@ import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.Scope;
 import com.google.inject.Scopes;
+import com.google.inject.servlet.SessionScoped;
 
+/**
+ * This is a copy of guice's implementation of {@link SessionScoped} with
+ * adjustments to place objects into the current view scope.
+ *
+ * @author Simon Taddiken
+ */
 final class ViewScopeImpl implements Scope {
 
     private enum NullObject {
@@ -267,7 +274,7 @@ final class ViewScopeImpl implements Scope {
                     if (t == null) {
                         t = unscoped.get();
                         if (!Scopes.isCircularProxy(t)) {
-                            viewMap().put(name, t == null
+                            viewRoot.getViewMap().put(name, t == null
                                     ? NullObject.INSTANCE
                                     : t);
                         }
@@ -281,16 +288,18 @@ final class ViewScopeImpl implements Scope {
                 return String.format("%s[%s]", unscoped, ViewScopeImpl.this);
             }
 
+        };
     }
 
     @Override
     public final String toString() {
         return "Custom.ViewScope";
     }
+
 }
 ```
 
-The last thing is to bind  this scope in a Module or ServletModule:
+The last thing is to bind this scope in a Module or ServletModule:
 
 ```java
 @Override
