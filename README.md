@@ -257,7 +257,9 @@ final class ViewScopeImpl implements Scope {
                 final FacesContext facesContext = FacesContext.getCurrentInstance();
                 final UIViewRoot viewRoot = facesContext.getViewRoot();
 
-                // fallback if no view is active
+                // fallback if no view is active. Consider to throw an exception 
+                // (you might also want to check whether there actually is a FacesContext 
+                // available to prevent injecting your beans outside a valid view scope)
                 if (viewRoot == null) {
                     return unscoped.get();
                 }
